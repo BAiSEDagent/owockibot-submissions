@@ -168,8 +168,9 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
 @media (max-width:600px){
   .stat-row td { display:block !important; width:100% !important; padding:0 0 10px 0 !important; }
   .bounty-row { display:flex !important; justify-content:space-between !important; align-items:flex-start !important; gap:12px !important; }
-  .outer-wrap { padding:0 8px !important; }
-  .inner-pad { padding:16px !important; }
+  .outer-wrap { padding:0 4px !important; }
+  .inner-pad { padding:14px !important; }
+  .hdr-cell { padding:16px 14px !important; }
 }
 </style>
 </head>
@@ -179,8 +180,8 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
 <table class="outer-wrap" width="620" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #222;border-radius:6px;overflow:hidden;max-width:620px;width:100%">
 
   <!-- Header -->
-  <tr><td style="background:#0a0a0a;border-bottom:2px solid #f5c518;padding:24px 28px">
-    <p style="margin:0 0 4px;font-size:20px;color:#f5c518;font-weight:bold;letter-spacing:.1em;font-family:'Courier New',monospace">🌊 OWOCKIBOT WEEKLY DIGEST</p>
+  <tr><td class="hdr-cell" style="background:#0a0a0a;border-bottom:2px solid #f5c518;padding:24px 28px">
+    <p style="margin:0 0 4px;font-size:clamp(13px,3.5vw,20px);color:#f5c518;font-weight:bold;letter-spacing:.08em;font-family:'Courier New',monospace;word-break:keep-all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🌊 OWOCKIBOT WEEKLY DIGEST</p>
     <p style="margin:0;font-size:12px;color:#555;font-family:'Courier New',monospace">${weekRange()}</p>
   </td></tr>
 
