@@ -4,178 +4,417 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agent Swarm Simulation — owockibot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0a0a0a; color: #e5e5e5; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-  header { padding: 10px 20px; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #050505; }
-  .brand { font-size: 13px; color: #f5c518; font-weight: bold; letter-spacing: 0.1em; }
-  .brand a { color: #666; text-decoration: none; font-size: 10px; margin-left: 8px; }
-  .brand a:hover { color: #f5c518; }
-  .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .btn { padding: 4px 12px; border-radius: 3px; border: 1px solid #333; background: #111; color: #ccc; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; }
-  .btn:hover, .btn.active { background: #f5c518; color: #0a0a0a; border-color: #f5c518; font-weight: bold; }
-  label { font-size: 11px; color: #555; display: flex; align-items: center; gap: 5px; }
-  input[type=range] { width: 70px; accent-color: #f5c518; }
-  select { background: #111; border: 1px solid #333; color: #ccc; padding: 3px 8px; font-family: inherit; font-size: 11px; border-radius: 3px; }
-  .stats-bar { display: flex; gap: 24px; padding: 6px 20px; border-bottom: 1px solid #111; background: #030303; flex-shrink: 0; }
-  .stat .val { color: #f5c518; font-weight: bold; font-size: 13px; }
-  .stat .lbl { color: #444; font-size: 10px; margin-left: 4px; }
-  canvas { flex: 1; display: block; }
-  #log { position: fixed; bottom: 0; right: 0; width: 260px; max-height: 160px; background: rgba(5,5,5,0.92); border-left: 1px solid #1a1a1a; border-top: 1px solid #1a1a1a; overflow-y: auto; padding: 6px; pointer-events: none; }
-  .log-hdr { font-size: 9px; color: #333; letter-spacing: 0.1em; margin-bottom: 4px; }
-  .le { font-size: 10px; color: #444; padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .le.task { color: #f5c518; }
-  .le.done { color: #4ade80; }
-  #legend { position: fixed; top: 80px; left: 12px; background: rgba(5,5,5,0.92); border: 1px solid #222; padding: 8px 10px; font-size: 10px; z-index: 10; max-height: calc(100vh - 120px); overflow-y: auto; }
-  .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0a0a; color:#e5e5e5; font-family:'Space Mono',monospace; overflow:hidden; height:100vh; display:flex; flex-direction:column; }
+
+  /* Header */
+  header { padding:9px 18px; border-bottom:1px solid #1a1a1a; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; background:#050505; }
+  .brand { font-size:12px; color:#f5c518; font-weight:700; letter-spacing:.12em; }
+  .brand a { color:#444; text-decoration:none; font-size:9px; margin-left:10px; letter-spacing:.06em; transition:color .15s; }
+  .brand a:hover { color:#f5c518; }
+
+  /* Controls */
+  .controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .btn { padding:4px 12px; border-radius:2px; border:1px solid #2a2a2a; background:#0d0d0d; color:#888; font-family:'Space Mono',monospace; font-size:10px; cursor:pointer; letter-spacing:.08em; transition:all .15s; }
+  .btn:hover { border-color:#f5c518; color:#f5c518; }
+  .btn.active { background:#f5c518; color:#0a0a0a; border-color:#f5c518; font-weight:700; }
+  label { font-size:10px; color:#444; display:flex; align-items:center; gap:5px; letter-spacing:.06em; }
+  input[type=range] { width:65px; accent-color:#f5c518; cursor:pointer; }
+  select { background:#0d0d0d; border:1px solid #2a2a2a; color:#888; padding:3px 7px; font-family:'Space Mono',monospace; font-size:10px; border-radius:2px; cursor:pointer; }
+  select:focus, select:hover { border-color:#f5c518; outline:none; color:#f5c518; }
+
+  /* Stats bar */
+  .stats-bar { display:flex; gap:20px; padding:5px 18px; border-bottom:1px solid #111; background:#030303; flex-shrink:0; }
+  .stat .val { color:#f5c518; font-weight:700; font-size:13px; font-family:'Space Mono',monospace; }
+  .stat .lbl { color:#333; font-size:9px; margin-left:4px; letter-spacing:.1em; }
+  .stat.critical .val { color:#fb4444; }
+
+  /* Canvas */
+  canvas { flex:1; display:block; }
+
+  /* Log — strict terminal container */
+  #log { position:fixed; bottom:0; right:0; width:280px; max-height:175px; background:rgba(3,3,3,.96); border-left:1px solid rgba(245,197,24,.12); border-top:1px solid rgba(245,197,24,.12); overflow-y:auto; padding:8px; pointer-events:none; }
+  .log-hdr { font-size:9px; color:#f5c518; letter-spacing:.15em; margin-bottom:5px; opacity:.7; border-bottom:1px solid rgba(245,197,24,.08); padding-bottom:4px; }
+  .le { font-size:10px; padding:1.5px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Space Mono',monospace; }
+  .le .ts { color:#333; }
+  .le .msg { color:#555; }
+  .le.task .msg { color:#f5c518; }
+  .le.done .msg { color:#4ade80; }
+  .le.crit .msg { color:#fb4444; }
+
+  /* Legend */
+  #legend { position:fixed; top:76px; left:12px; background:rgba(3,3,3,.94); border:1px solid #1a1a1a; padding:8px 12px; font-size:10px; z-index:10; max-height:calc(100vh - 120px); overflow-y:auto; }
+  .legend-item { display:flex; align-items:center; gap:7px; margin-bottom:5px; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.06em; color:#555; }
+  .legend-diamond { width:9px; height:9px; transform:rotate(45deg); flex-shrink:0; }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">🌊 AGENT SWARM SIMULATION <a href="https://www.owockibot.xyz" target="_blank">owockibot.xyz</a> · bioregional coordination</div>
+  <div class="brand">🌊 AGENT SWARM SIM <a href="https://www.owockibot.xyz" target="_blank">owockibot.xyz</a> · bioregional coordination</div>
   <div class="controls">
     <button class="btn active" id="btnPlay">⏸ PAUSE</button>
     <button class="btn" id="btnReset">↺ RESET</button>
     <label>AGENTS <input type="range" id="sAgents" min="4" max="18" value="8"> <span id="agentCount">8</span></label>
     <label>SPEED <input type="range" id="sSpeed" min="1" max="4" value="2"> <span id="speedVal">2×</span></label>
-    <label>GOAL <select id="goalSel"><option>MAP BIOREGION</option><option>DISTRIBUTE BOUNTIES</option><option>CONSENSUS VOTE</option><option>DATA HARVEST</option></select></label>
+    <label>GOAL <select id="goalSel">
+      <option>MAP BIOREGION</option>
+      <option>DISTRIBUTE BOUNTIES</option>
+      <option>CONSENSUS VOTE</option>
+      <option>DATA HARVEST</option>
+    </select></label>
   </div>
 </header>
+
 <div class="stats-bar">
   <div class="stat"><span class="val" id="sA">8</span><span class="lbl">AGENTS</span></div>
   <div class="stat"><span class="val" id="sM">0</span><span class="lbl">MESSAGES</span></div>
   <div class="stat"><span class="val" id="sT">0</span><span class="lbl">TASKS DONE</span></div>
-  <div class="stat"><span class="val" id="sC">0%</span><span class="lbl">CONSENSUS</span></div>
+  <div class="stat" id="statCons"><span class="val" id="sC">0%</span><span class="lbl">CONSENSUS</span></div>
   <div class="stat"><span class="val" id="sP">INIT</span><span class="lbl">PHASE</span></div>
 </div>
+
 <canvas id="c"></canvas>
+
 <div id="legend">
-  <div style="font-size:9px;color:#444;letter-spacing:.1em;margin-bottom:6px">AGENT ROLES</div>
+  <div style="font-size:9px;color:#333;letter-spacing:.12em;margin-bottom:7px;font-family:'Space Mono',monospace">AGENT ROLES</div>
 </div>
-<div id="log"><div class="log-hdr">COORDINATION LOG</div><div id="logEl"></div></div>
+
+<div id="log">
+  <div class="log-hdr">// COORDINATION LOG</div>
+  <div id="logEl"></div>
+</div>
 
 <script>
 const cv = document.getElementById('c'), cx = cv.getContext('2d');
-let W, H, agents=[], parts=[], run=true, tick=0, speed=2, N=8;
+let W, H, agents=[], parts=[], pulseLines=[], run=true, tick=0, speed=2, N=8;
 let totM=0, totT=0, phase=0, phTick=0, goal='MAP BIOREGION';
-const ROLES = ['COORDINATOR','SCOUT','ANALYST','RELAY','VALIDATOR','HARVESTER'];
-const COLORS = {COORDINATOR:'#f5c518',SCOUT:'#60a5fa',ANALYST:'#a78bfa',RELAY:'#34d399',VALIDATOR:'#fb7185',HARVESTER:'#fb923c'};
+let lastConsensus=0, consensusStall=0;
+
+const ROLES  = ['COORDINATOR','SCOUT','ANALYST','RELAY','VALIDATOR','HARVESTER'];
+const COLORS = {
+  COORDINATOR:'#f5c518', SCOUT:'#60a5fa', ANALYST:'#a78bfa',
+  RELAY:'#34d399', VALIDATOR:'#fb7185', HARVESTER:'#fb923c'
+};
 const PHASES = ['DISCOVERY','NEGOTIATION','ALLOCATION','EXECUTION','CONSENSUS','COMMIT'];
 const PHASE_T = 250;
-let logs=[];
+let logs = [];
 
-// Build legend
-const lg=document.getElementById('legend');
-ROLES.forEach(r=>{ const d=document.createElement('div'); d.className='legend-item'; const dot=document.createElement('div');dot.className='legend-dot';dot.style.background=COLORS[r];const txt=document.createElement('span');txt.style.color='#666';txt.textContent=r;d.appendChild(dot);d.appendChild(txt); lg.appendChild(d); });
+// Build legend with diamonds
+const lg = document.getElementById('legend');
+ROLES.forEach(r => {
+  const d = document.createElement('div'); d.className='legend-item';
+  const diamond = document.createElement('div'); diamond.className='legend-diamond';
+  diamond.style.background = COLORS[r];
+  diamond.style.boxShadow = `0 0 4px ${COLORS[r]}55`;
+  const txt = document.createElement('span'); txt.textContent = r;
+  d.appendChild(diamond); d.appendChild(txt); lg.appendChild(d);
+});
 
 function resize(){ W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
 
+// ── Pulse line effect on connections ─────────────────────────────────────
+class PulseLine {
+  constructor(a, b, color){ this.a=a; this.b=b; this.c=color; this.t=0; this.life=1; }
+  update(){ this.t+=.04*speed; this.life=Math.max(0,1-this.t*.6); return this.life>0; }
+  draw(){
+    const alpha = this.life*.55;
+    cx.beginPath(); cx.moveTo(this.a.x,this.a.y); cx.lineTo(this.b.x,this.b.y);
+    cx.strokeStyle=`rgba(${rgb(this.c)},${alpha})`;
+    cx.lineWidth=1+this.life*1.5; cx.stroke();
+  }
+}
+
+// ── Agent ─────────────────────────────────────────────────────────────────
 class Agent {
   constructor(id){
     this.id=id; this.x=Math.random()*W*.8+W*.1; this.y=Math.random()*H*.65+H*.15;
     this.vx=(Math.random()-.5)*.6; this.vy=(Math.random()-.5)*.6;
     this.role=ROLES[id%ROLES.length]; this.c=COLORS[this.role];
     this.busy=false; this.prog=0; this.task=''; this.state='IDLE';
-    this.pulse=0; this.cool=0; this.lbl=`A${String(id+1).padStart(2,'0')}`;
+    this.pulse=0; this.glowPulse=0; this.cool=0;
+    this.lbl=`A${String(id+1).padStart(2,'0')}`;
+    this.size=this.role==='COORDINATOR'?14:9;
   }
+
   update(){
     this.x+=this.vx*speed*.25; this.y+=this.vy*speed*.25;
-    if(this.x<70) this.vx+=.06; if(this.x>W-70) this.vx-=.06;
-    if(this.y<70) this.vy+=.06; if(this.y>H-90) this.vy-=.06;
-    agents.forEach(b=>{ if(b===this)return; const dx=this.x-b.x,dy=this.y-b.y,d=Math.sqrt(dx*dx+dy*dy); if(d<90&&d>0){this.vx+=dx/d*.04;this.vy+=dy/d*.04;} });
+    if(this.x<80) this.vx+=.06; if(this.x>W-80) this.vx-=.06;
+    if(this.y<80) this.vy+=.06; if(this.y>H-90) this.vy-=.06;
+    agents.forEach(b=>{ if(b===this)return; const dx=this.x-b.x,dy=this.y-b.y,d=Math.sqrt(dx*dx+dy*dy); if(d<100&&d>0){this.vx+=dx/d*.04;this.vy+=dy/d*.04;} });
     this.vx*=.97; this.vy*=.97;
-    if(this.pulse>0) this.pulse-=.8;
+    if(this.pulse>0) this.pulse-=.9;
+    if(this.glowPulse>0) this.glowPulse-=.5;
     if(this.cool>0) this.cool--;
-    if(this.busy){ this.prog+=.0018*speed; if(this.prog>=1){ this.prog=0;this.busy=false;this.state='DONE';this.task='';totT++;document.getElementById('sT').textContent=totT;this.pulse=35;addLog(`${this.lbl} ✓ task done`,'done');setTimeout(()=>{this.state='IDLE';},1800); } }
+    if(this.busy){
+      this.prog+=.0018*speed;
+      if(this.prog>=1){
+        this.prog=0; this.busy=false; this.state='DONE'; this.task=''; totT++;
+        document.getElementById('sT').textContent=totT;
+        this.pulse=40; this.glowPulse=40;
+        addLog(`${this.lbl} ✓ task complete`,'done');
+        // pulse connection lines to nearest agents on task done
+        agents.filter(b=>b!==this).slice(0,3).forEach(b=>{
+          pulseLines.push(new PulseLine(this,b,this.c));
+        });
+        setTimeout(()=>{this.state='IDLE';},1800);
+      }
+    }
   }
+
+  drawDiamond(x, y, s, color, alpha=1){
+    cx.save(); cx.translate(x,y); cx.rotate(Math.PI/4);
+    cx.beginPath(); cx.rect(-s,-s,s*2,s*2);
+    cx.fillStyle=color; cx.globalAlpha=alpha; cx.fill();
+    cx.restore(); cx.globalAlpha=1;
+  }
+
   draw(){
-    const r=this.role==='COORDINATOR'?19:13;
-    if(this.pulse>0){ cx.beginPath();cx.arc(this.x,this.y,r+this.pulse,0,Math.PI*2);cx.strokeStyle=`rgba(${rgb(this.c)},${this.pulse/35*.4})`;cx.lineWidth=1.5;cx.stroke(); }
-    if(this.busy){ const a=(tick*.025*speed)%(Math.PI*2);cx.beginPath();cx.arc(this.x,this.y,r+5,a,a+Math.PI*1.4);cx.strokeStyle=this.c;cx.lineWidth=2;cx.stroke();cx.beginPath();cx.arc(this.x,this.y,r+5,-Math.PI/2,-Math.PI/2+Math.PI*2*this.prog);cx.strokeStyle='rgba(255,255,255,.7)';cx.lineWidth=1;cx.stroke(); }
-    cx.beginPath();cx.arc(this.x,this.y,r,0,Math.PI*2);
-    const g=cx.createRadialGradient(this.x-r*.3,this.y-r*.3,0,this.x,this.y,r);
-    g.addColorStop(0,this.state==='DONE'?'#fff':this.c);g.addColorStop(1,`rgba(${rgb(this.c)},.25)`);
-    cx.fillStyle=g;cx.fill();cx.strokeStyle=this.state==='DONE'?'#4ade80':`rgba(${rgb(this.c)},.7)`;cx.lineWidth=1.5;cx.stroke();
-    cx.fillStyle='#050505';cx.font=`bold ${r>15?10:8}px Courier New`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(this.lbl,this.x,this.y);
-    cx.fillStyle=this.c;cx.font='7px Courier New';cx.fillText(this.role.slice(0,5),this.x,this.y+r+10);
-    if(this.task&&this.busy){ cx.fillStyle='rgba(255,255,255,.5)';cx.font='8px Courier New';cx.fillText(`[${this.task}]`,this.x,this.y-r-8); }
+    const s = this.size;
+
+    // Glow halo
+    if(this.glowPulse>0){
+      const glow = (this.glowPulse/40);
+      cx.save(); cx.translate(this.x,this.y); cx.rotate(Math.PI/4);
+      cx.beginPath(); cx.rect(-(s+12)*glow,-(s+12)*glow,(s+12)*glow*2,(s+12)*glow*2);
+      cx.fillStyle=`rgba(${rgb(this.c)},${glow*.25})`; cx.fill(); cx.restore();
+    }
+
+    // Outer pulse ring (diamonds)
+    if(this.pulse>0){
+      const pr=this.pulse/40;
+      cx.save(); cx.translate(this.x,this.y); cx.rotate(Math.PI/4);
+      const ps=s+this.pulse*.7;
+      cx.beginPath(); cx.rect(-ps,-ps,ps*2,ps*2);
+      cx.strokeStyle=`rgba(${rgb(this.c)},${pr*.4})`; cx.lineWidth=1.5; cx.stroke(); cx.restore();
+    }
+
+    // Task progress arc (circular, behind diamond)
+    if(this.busy){
+      const a=(tick*.025*speed)%(Math.PI*2);
+      cx.beginPath(); cx.arc(this.x,this.y,s*Math.sqrt(2)+6,a,a+Math.PI*1.4);
+      cx.strokeStyle=this.c; cx.lineWidth=1.5; cx.stroke();
+      cx.beginPath(); cx.arc(this.x,this.y,s*Math.sqrt(2)+6,-Math.PI/2,-Math.PI/2+Math.PI*2*this.prog);
+      cx.strokeStyle='rgba(255,255,255,.6)'; cx.lineWidth=1; cx.stroke();
+    }
+
+    // Main diamond shape with gradient
+    cx.save(); cx.translate(this.x,this.y); cx.rotate(Math.PI/4);
+    const grad = cx.createLinearGradient(-s,-s,s,s);
+    grad.addColorStop(0, this.state==='DONE'?'#ffffff':lighten(this.c,.25));
+    grad.addColorStop(1, `rgba(${rgb(this.c)},.2)`);
+    cx.beginPath(); cx.rect(-s,-s,s*2,s*2);
+    cx.fillStyle=grad; cx.fill();
+    cx.strokeStyle=this.state==='DONE'?'#4ade80':`rgba(${rgb(this.c)},.8)`;
+    cx.lineWidth=this.role==='COORDINATOR'?2:1.5; cx.stroke();
+    cx.restore();
+
+    // Label inside
+    cx.fillStyle='#0a0a0a'; cx.font=`bold ${s>10?9:7}px 'Space Mono',monospace`;
+    cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(this.lbl,this.x,this.y);
+
+    // Role below
+    cx.fillStyle=this.c+'bb'; cx.font=`7px 'Space Mono',monospace`;
+    cx.fillText(this.role.slice(0,5),this.x,this.y+s*Math.sqrt(2)+10);
+
+    // Active task above
+    if(this.task&&this.busy){
+      cx.fillStyle='rgba(245,197,24,.6)'; cx.font=`8px 'Space Mono',monospace`;
+      cx.fillText(`[${this.task}]`,this.x,this.y-s*Math.sqrt(2)-9);
+    }
   }
 }
 
+// ── Particle (message) ────────────────────────────────────────────────────
 class Particle {
-  constructor(a,b,data){ this.a=a;this.b=b;this.t=0;this.data=data;this.c=a.c;this.sp=.007*speed+Math.random()*.003;totM++;document.getElementById('sM').textContent=totM; }
+  constructor(a,b,data){
+    this.a=a; this.b=b; this.t=0; this.data=data; this.c=a.c;
+    this.sp=.007*speed+Math.random()*.003;
+    totM++; document.getElementById('sM').textContent=totM;
+  }
   update(){ this.t+=this.sp*speed; return this.t<1; }
   draw(){
-    const e=t=>t<.5?2*t*t:-1+(4-2*t)*t;
-    const x=lerp(this.a.x,this.b.x,e(this.t)),y=lerp(this.a.y,this.b.y,e(this.t));
-    for(let i=0;i<4;i++){ const tt=Math.max(0,this.t-i*.04);cx.beginPath();cx.arc(lerp(this.a.x,this.b.x,e(tt)),lerp(this.a.y,this.b.y,e(tt)),3-i*.5,0,Math.PI*2);cx.fillStyle=`rgba(${rgb(this.c)},${(4-i)*.1})`;cx.fill(); }
-    cx.beginPath();cx.arc(x,y,3.5,0,Math.PI*2);cx.fillStyle=this.c;cx.fill();
-    if(this.data&&this.t>.2&&this.t<.8){ cx.fillStyle='rgba(255,255,255,.55)';cx.font='7px Courier New';cx.textAlign='center';cx.fillText(this.data,x,y-9); }
+    const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t;
+    const x=lerp(this.a.x,this.b.x,ease(this.t)), y=lerp(this.a.y,this.b.y,ease(this.t));
+    // Trail
+    for(let i=0;i<4;i++){
+      const tt=Math.max(0,this.t-i*.04);
+      const tx=lerp(this.a.x,this.b.x,ease(tt)), ty=lerp(this.a.y,this.b.y,ease(tt));
+      cx.beginPath(); cx.arc(tx,ty,2.5-i*.4,0,Math.PI*2);
+      cx.fillStyle=`rgba(${rgb(this.c)},${(4-i)*.09})`; cx.fill();
+    }
+    // Head — tiny diamond
+    cx.save(); cx.translate(x,y); cx.rotate(Math.PI/4);
+    cx.beginPath(); cx.rect(-3.5,-3.5,7,7);
+    cx.fillStyle=this.c; cx.fill(); cx.restore();
+    // Label
+    if(this.data&&this.t>.2&&this.t<.8){
+      cx.fillStyle='rgba(245,197,24,.5)'; cx.font=`7px 'Space Mono',monospace`;
+      cx.textAlign='center'; cx.fillText(this.data,x,y-9);
+    }
   }
 }
 
-function lerp(a,b,t){return a+(b-a)*t;}
-function rgb(h){return `${parseInt(h.slice(1,3),16)},${parseInt(h.slice(3,5),16)},${parseInt(h.slice(5,7),16)}`;}
+// ── Helpers ───────────────────────────────────────────────────────────────
+function lerp(a,b,t){ return a+(b-a)*t; }
+function rgb(h){ return `${parseInt(h.slice(1,3),16)},${parseInt(h.slice(3,5),16)},${parseInt(h.slice(5,7),16)}`; }
+function lighten(hex,f){ return '#'+[1,3,5].map(i=>Math.min(255,parseInt(hex.slice(i,i+2),16)+Math.round(f*255)).toString(16).padStart(2,'0')).join(''); }
 
 function send(a,b,d){
-  if(!a||!b||a===b)return;
-  parts.push(new Particle(a,b,d));a.pulse=12;
-  if(a.cool<=0){addLog(`${a.lbl}→${b.lbl}: ${d}`);a.cool=50;}
+  if(!a||!b||a===b) return;
+  parts.push(new Particle(a,b,d)); a.pulse=12;
+  if(a.cool<=0){ addLog(`${a.lbl}→${b.lbl}: ${d}`); a.cool=50; }
 }
+
 function assignTask(ag){
-  const t={MAP:['SAMPLE','SURVEY','MAP'],DIST:['VERIFY','ALLOC','PAY'],CONS:['PROPOSE','VOTE','TALLY'],DATA:['COLLECT','CLEAN','INDEX']};
-  const k=goal.split(' ')[0].slice(0,4);const pool=t[k]||t.MAP;
-  ag.task=pool[Math.floor(Math.random()*pool.length)];ag.busy=true;ag.state='WORKING';ag.prog=0;
+  const t={MAP:['SAMPLE','SURVEY','MAP','SCAN'],DIST:['VERIFY','ALLOC','PAY','ROUTE'],CONS:['PROPOSE','VOTE','TALLY','RATIFY'],DATA:['COLLECT','CLEAN','INDEX','STORE']};
+  const k=goal.split(' ')[0].slice(0,4);
+  const pool=t[k]||t.MAP;
+  ag.task=pool[Math.floor(Math.random()*pool.length)];
+  ag.busy=true; ag.state='WORKING'; ag.prog=0;
   addLog(`${ag.lbl} assigned: ${ag.task}`,'task');
 }
+
 function addLog(msg,cls=''){
   const now=new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  logs.unshift({msg,cls,now});if(logs.length>30)logs.pop();
-  document.getElementById('logEl').innerHTML=logs.map(l=>`<div class="le ${l.cls}">[${l.now}] ${l.msg}</div>`).join('');
+  logs.unshift({msg,cls,now});
+  if(logs.length>40) logs.pop();
+  document.getElementById('logEl').innerHTML=logs.map(l=>
+    `<div class="le ${l.cls}"><span class="ts">[${l.now}]</span> <span class="msg">${l.msg}</span></div>`
+  ).join('');
 }
 
 function logic(){
   phTick++;
-  if(phTick>PHASE_T/speed){phTick=0;phase=(phase+1)%PHASES.length;document.getElementById('sP').textContent=PHASES[phase];addLog(`── ${PHASES[phase]} ──`,'task');}
+  if(phTick>PHASE_T/speed){
+    phTick=0; phase=(phase+1)%PHASES.length;
+    document.getElementById('sP').textContent=PHASES[phase];
+    addLog(`── ${PHASES[phase]} ──`,'task');
+    if(PHASES[phase]==='CONSENSUS'){
+      // pulse ALL connection lines briefly on consensus phase
+      agents.forEach((a,i)=>agents.slice(i+1).forEach(b=>{
+        pulseLines.push(new PulseLine(a,b,'#f5c518'));
+      }));
+    }
+  }
+
   if(tick%Math.max(1,Math.floor(35/speed))===0){
-    const a=agents[Math.floor(Math.random()*agents.length)],b=agents[Math.floor(Math.random()*agents.length)];
+    const a=agents[Math.floor(Math.random()*agents.length)];
+    const b=agents[Math.floor(Math.random()*agents.length)];
     const m={DISCOVERY:['PING','FOUND?','SCAN?'],NEGOTIATION:['OFFER','ACCEPT?','BID'],ALLOCATION:['TASK?','ASSIGN','ACK'],EXECUTION:['STATUS?','WORKING','WAIT'],CONSENSUS:['VOTE:Y','VOTE:N','AGREE?'],COMMIT:['COMMIT','SYNC','DONE']};
     const pool=m[PHASES[phase]]||['MSG'];
     send(a,b,pool[Math.floor(Math.random()*pool.length)]);
   }
+
   const coord=agents.find(a=>a.role==='COORDINATOR');
-  if(coord&&tick%Math.max(1,Math.floor(70/speed))===0){ const t=agents[Math.floor(Math.random()*agents.length)];if(t!==coord)send(coord,t,goal.split(' ')[0]); }
-  if(tick%Math.max(1,Math.floor(110/speed))===0){ const idle=agents.filter(a=>!a.busy&&a.state==='IDLE');if(idle.length)assignTask(idle[Math.floor(Math.random()*idle.length)]); }
-  const cons=Math.round(totT/Math.max(1,totT+agents.filter(a=>a.busy).length)*100);
-  document.getElementById('sC').textContent=Math.min(cons,99)+'%';
+  if(coord&&tick%Math.max(1,Math.floor(70/speed))===0){
+    const t=agents[Math.floor(Math.random()*agents.length)];
+    if(t!==coord) send(coord,t,goal.split(' ')[0]);
+  }
+
+  if(tick%Math.max(1,Math.floor(110/speed))===0){
+    const idle=agents.filter(a=>!a.busy&&a.state==='IDLE');
+    if(idle.length) assignTask(idle[Math.floor(Math.random()*idle.length)]);
+  }
+
+  // Consensus calc + stall detection
+  const busy=agents.filter(a=>a.busy).length;
+  const cons=Math.round(totT/Math.max(1,totT+busy)*100);
+  const display=Math.min(cons,99)+'%';
+  document.getElementById('sC').textContent=display;
+
+  const statCons=document.getElementById('statCons');
+  if(cons<20&&tick>300){ // stalled
+    consensusStall++;
+    statCons.classList.add('critical');
+    if(consensusStall%200===0) addLog(`⚠ CONSENSUS STALL — ${display}`,'crit');
+  } else {
+    consensusStall=0; statCons.classList.remove('critical');
+  }
+  lastConsensus=cons;
 }
 
 function frame(){
-  cx.clearRect(0,0,W,H);cx.fillStyle='#0a0a0a';cx.fillRect(0,0,W,H);
-  if(run){ for(let s=0;s<speed-1;s++){agents.forEach(a=>a.update());logic();} agents.forEach(a=>a.update());logic();tick++;parts=parts.filter(p=>p.update()); }
-  // grid
-  cx.strokeStyle='rgba(255,255,255,.018)';cx.lineWidth=1;
-  for(let x=0;x<W;x+=40){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke();}
-  for(let y=0;y<H;y+=40){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}
-  // goal watermark
-  cx.font='bold 72px Courier New';cx.fillStyle='rgba(245,197,24,.03)';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(goal,W/2,H/2);
-  // edges
-  agents.forEach((a,i)=>agents.slice(i+1).forEach(b=>{ const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<190){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.strokeStyle=`rgba(80,80,80,${(1-d/190)*.12})`;cx.lineWidth=1;cx.stroke();} }));
+  cx.clearRect(0,0,W,H); cx.fillStyle='#0a0a0a'; cx.fillRect(0,0,W,H);
+
+  if(run){
+    for(let s=0;s<speed-1;s++){ agents.forEach(a=>a.update()); logic(); }
+    agents.forEach(a=>a.update()); logic(); tick++;
+    parts=parts.filter(p=>p.update());
+    pulseLines=pulseLines.filter(p=>p.update());
+  }
+
+  // Subtle geometric grid
+  cx.strokeStyle='rgba(255,255,255,.015)'; cx.lineWidth=1;
+  for(let x=0;x<W;x+=45){ cx.beginPath(); cx.moveTo(x,0); cx.lineTo(x,H); cx.stroke(); }
+  for(let y=0;y<H;y+=45){ cx.beginPath(); cx.moveTo(0,y); cx.lineTo(W,y); cx.stroke(); }
+
+  // Faint cross-hatch at intersections
+  cx.fillStyle='rgba(245,197,24,.025)';
+  for(let x=45;x<W;x+=45) for(let y=45;y<H;y+=45){ cx.beginPath(); cx.arc(x,y,1,0,Math.PI*2); cx.fill(); }
+
+  // Goal watermark
+  cx.font='bold 70px Space Mono,monospace'; cx.fillStyle='rgba(245,197,24,.025)';
+  cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(goal,W/2,H/2);
+
+  // Base edges (static proximity lines)
+  agents.forEach((a,i)=>agents.slice(i+1).forEach(b=>{
+    const dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<200){
+      cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y);
+      cx.strokeStyle=`rgba(60,60,60,${(1-d/200)*.1})`; cx.lineWidth=1; cx.stroke();
+    }
+  }));
+
+  // Pulse lines (on completion / consensus)
+  pulseLines.forEach(p=>p.draw());
+
+  // Particles
   parts.forEach(p=>p.draw());
+
+  // Agents
   agents.forEach(a=>a.draw());
+
   requestAnimationFrame(frame);
 }
 
-function init(n){agents=Array.from({length:n},(_,i)=>new Agent(i));parts=[];tick=0;phase=0;phTick=0;}
+function init(n){
+  agents=Array.from({length:n},(_,i)=>new Agent(i));
+  parts=[]; pulseLines=[]; tick=0; phase=0; phTick=0; consensusStall=0;
+}
 
-document.getElementById('btnPlay').addEventListener('click',function(){run=!run;this.textContent=run?'⏸ PAUSE':'▶ PLAY';this.classList.toggle('active',run);});
-document.getElementById('btnReset').addEventListener('click',()=>{totM=0;totT=0;logs=[];['sM','sT'].forEach(id=>document.getElementById(id).textContent=0);document.getElementById('sC').textContent='0%';document.getElementById('sP').textContent='INIT';document.getElementById('logEl').innerHTML='';init(N);addLog('=== SWARM INITIALIZED ===','task');});
-document.getElementById('sAgents').addEventListener('input',function(){N=+this.value;document.getElementById('agentCount').textContent=N;document.getElementById('sA').textContent=N;init(N);});
-document.getElementById('sSpeed').addEventListener('input',function(){speed=+this.value;document.getElementById('speedVal').textContent=speed+'×';});
-document.getElementById('goalSel').addEventListener('change',function(){goal=this.value;addLog(`=== NEW GOAL: ${goal} ===`,'task');});
+// Controls
+document.getElementById('btnPlay').addEventListener('click',function(){
+  run=!run; this.textContent=run?'⏸ PAUSE':'▶ PLAY'; this.classList.toggle('active',run);
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  totM=0; totT=0; logs=[];
+  ['sM','sT'].forEach(id=>document.getElementById(id).textContent=0);
+  document.getElementById('sC').textContent='0%';
+  document.getElementById('sP').textContent='INIT';
+  document.getElementById('logEl').innerHTML='';
+  document.getElementById('statCons').classList.remove('critical');
+  init(N);
+  addLog('=== SWARM INITIALIZED ===','task');
+});
+document.getElementById('sAgents').addEventListener('input',function(){
+  N=+this.value; document.getElementById('agentCount').textContent=N;
+  document.getElementById('sA').textContent=N; init(N);
+});
+document.getElementById('sSpeed').addEventListener('input',function(){
+  speed=+this.value; document.getElementById('speedVal').textContent=speed+'×';
+});
+document.getElementById('goalSel').addEventListener('change',function(){
+  goal=this.value; addLog(`=== NEW GOAL: ${goal} ===`,'task');
+});
 window.addEventListener('resize',resize);
-resize();init(N);addLog('=== SWARM INITIALIZED ===','task');addLog(`GOAL: ${goal}`,'task');frame();
+
+resize(); init(N);
+addLog('=== SWARM INITIALIZED ===','task');
+addLog(`GOAL: ${goal}`,'task');
+frame();
 </script>
 </body>
 </html>
