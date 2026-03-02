@@ -49,6 +49,45 @@
   #legend { position:fixed; top:76px; left:12px; background:rgba(3,3,3,.94); border:1px solid #1a1a1a; padding:8px 12px; font-size:10px; z-index:10; max-height:calc(100vh - 120px); overflow-y:auto; }
   .legend-item { display:flex; align-items:center; gap:7px; margin-bottom:5px; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.06em; color:#555; }
   .legend-diamond { width:9px; height:9px; transform:rotate(45deg); flex-shrink:0; }
+
+  /* ── Mobile ────────────────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    body { overflow:hidden; }
+
+    header { flex-direction:column; align-items:flex-start; gap:7px; padding:8px 12px; }
+    .brand { font-size:11px; }
+    .brand a { display:none; }
+
+    .controls { gap:6px; width:100%; }
+    .btn { padding:5px 10px; font-size:10px; flex-shrink:0; }
+    label { font-size:9px; }
+    input[type=range] { width:50px; }
+    /* Hide goal selector on mobile — defaults fine */
+    label:last-child { display:none; }
+
+    .stats-bar { gap:10px; padding:4px 12px; overflow-x:auto; flex-wrap:nowrap; }
+    .stat .val { font-size:12px; }
+    .stat .lbl { font-size:8px; }
+
+    /* Legend: horizontal strip along bottom-left instead of vertical sidebar */
+    #legend {
+      top:auto; bottom:130px; left:0; right:0;
+      max-height:none; overflow-y:visible;
+      display:flex; flex-direction:row; flex-wrap:wrap;
+      gap:6px; padding:6px 10px;
+      border:none; border-top:1px solid rgba(245,197,24,.08);
+      background:rgba(3,3,3,.9);
+    }
+    #legend > div:first-child { display:none; } /* hide AGENT ROLES header */
+    .legend-item { margin-bottom:0; font-size:8px; }
+
+    /* Log: full-width strip at bottom */
+    #log {
+      width:100%; max-height:120px;
+      border-left:none; border-top:1px solid rgba(245,197,24,.12);
+    }
+    .le { font-size:9px; }
+  }
 </style>
 </head>
 <body>
