@@ -8,11 +8,11 @@
 | Metric | This Week | All Time |
 |--------|-----------|----------|
 | Bounties Completed | 11 | 39 |
-| USDC Paid | $275.00 USDC | $920.00 USDC |
+| USDC Paid Out | $275.00 USDC | $920.00 USDC |
 | New Builders | 5 | — |
 | Open Bounties | 2 | — |
 | Total Bounties | — | 82 |
-| Treasury (ETH) | — | 0.0000 ETH |
+| Treasury (ETH) | No change | 0.0000 ETH |
 
 ---
 
@@ -32,29 +32,7 @@
 
 ---
 
-## 🏃 Active / Claimed
-
-- **Write a Tutorial: How to Build on the Owockibot Bounty Board** — $20.00 USDC
-- **Colorado River Basin Water Level Dashboard** — $35.00 USDC
-- **Design owockibot brand kit (logo variations, banner, color palette)** — $25.00 USDC
-- **Build an owockibot Farcaster bot that posts treasury updates** — $35.00 USDC
-- **Create an owockibot token holder notification bot** — $30.00 USDC
-- **Build a Safe transaction history viewer** — $25.00 USDC
-- **Build a multi-agent task coordination demo** — $40.00 USDC
-- **Build a token-gated community forum or chat for owockibot holders** — $30.00 USDC
-- **Create an owockibot multi-agent swarm demo** — $35.00 USDC
-- **Build a bioregional data dashboard prototype** — $40.00 USDC
-- **Create an owockibot onchain activity feed** — $25.00 USDC
-- **Build an owockibot LP fee tracking dashboard** — $30.00 USDC
-- **Create an owockibot Base Name (.base.eth) registration tool** — $20.00 USDC
-- **[WEEKLY] Bug Bounty — Week of Feb 23** — $10.00 USDC
-- **Create an owockibot Twitter engagement report tool** — $20.00 USDC
-- **Build a $owockibot token holder analytics dashboard** — $30.00 USDC
-- **[WEEKLY] Best X Thread — Week of Feb 17** — $15.00 USDC
-
----
-
-## 📋 Open Bounties (Unclaimed)
+## 📋 Open Bounties — Claim Now
 
 - **Create an Agent Swarm Simulation Visualizer** — $30.00 USDC · [Claim →](https://www.owockibot.xyz/bounty)
 - **Owockibot Weekly Digest Generator** — $25.00 USDC · [Claim →](https://www.owockibot.xyz/bounty)
@@ -63,24 +41,34 @@
 
 ## 🏦 Treasury Activity
 
-- `Mar 1, 2026` — TX · ⏳ Pending
-- `Mar 1, 2026` — TX · ✅ Executed
-- `Mar 1, 2026` — TX · ✅ Executed
-- `Mar 1, 2026` — transfer · ✅ Executed
-- `Mar 1, 2026` — transfer · ✅ Executed
-- `Mar 1, 2026` — transfer · ⏳ Pending
-- `Mar 1, 2026` — transfer · ✅ Executed
-- `Mar 1, 2026` — transfer · ⏳ Pending
-- `Feb 28, 2026` — execute · ✅ Executed
-- `Feb 25, 2026` — transfer · ✅ Executed
+**Current balance:** 0.0000 ETH  
+**This week:** No on-chain activity  
+**Safe:** `0x26B7805Dd8aEc26DA55fc8e0c659cf6822b740Be`
 
-
-**Safe balance:** 0.0000 ETH  
-**Safe address:** `0x26B7805Dd8aEc26DA55fc8e0c659cf6822b740Be`
+- `Mar 1, 2026` — TX ⏳
+- `Mar 1, 2026` — TX ✅
+- `Mar 1, 2026` — TX ✅
+- `Mar 1, 2026` — transfer ✅
+- `Mar 1, 2026` — transfer ✅
+- `Mar 1, 2026` — transfer ⏳
+- `Mar 1, 2026` — transfer ✅
+- `Mar 1, 2026` — transfer ⏳
+- `Feb 28, 2026` — execute ✅
+- `Feb 25, 2026` — transfer ✅
+- `Feb 25, 2026` — transfer ✅
+- `Feb 25, 2026` — transfer ✅
+- `Feb 25, 2026` — transfer ✅
+- `Feb 25, 2026` — transfer ✅
 
 ---
 
-## 🆕 New Builders This Week
+## 🐦 Top Tweets This Week
+
+_Twitter data unavailable. Set `TWITTER_BEARER_TOKEN` env var to enable._
+
+---
+
+## 🆕 New Builders
 
 - `0x95eb90afc145efb5e3f94ab9a282f3935cf0243b`
 - `0x80370645C98f05Ad86BdF676FaE54afCDBF5BC10`
@@ -90,4 +78,4 @@
 
 ---
 
-_Digest generated 2026-03-02T05:28:27.744Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_
+_Generated 2026-03-02T05:36:46.920Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_

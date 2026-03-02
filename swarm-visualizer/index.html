@@ -9,7 +9,8 @@
   body { background: #0a0a0a; color: #e5e5e5; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
   header { padding: 10px 20px; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #050505; }
   .brand { font-size: 13px; color: #f5c518; font-weight: bold; letter-spacing: 0.1em; }
-  .brand sub { font-size: 10px; color: #444; margin-left: 8px; }
+  .brand a { color: #666; text-decoration: none; font-size: 10px; margin-left: 8px; }
+  .brand a:hover { color: #f5c518; }
   .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .btn { padding: 4px 12px; border-radius: 3px; border: 1px solid #333; background: #111; color: #ccc; font-family: inherit; font-size: 11px; cursor: pointer; transition: all 0.15s; }
   .btn:hover, .btn.active { background: #f5c518; color: #0a0a0a; border-color: #f5c518; font-weight: bold; }
@@ -25,14 +26,14 @@
   .le { font-size: 10px; color: #444; padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .le.task { color: #f5c518; }
   .le.done { color: #4ade80; }
-  #legend { position: fixed; top: 80px; left: 12px; background: rgba(5,5,5,0.85); border: 1px solid #1a1a1a; padding: 8px; font-size: 10px; }
+  #legend { position: fixed; top: 80px; left: 12px; background: rgba(5,5,5,0.92); border: 1px solid #222; padding: 8px 10px; font-size: 10px; z-index: 10; max-height: calc(100vh - 120px); overflow-y: auto; }
   .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">🌊 AGENT SWARM SIMULATION <sub>owockibot.xyz · bioregional coordination</sub></div>
+  <div class="brand">🌊 AGENT SWARM SIMULATION <a href="https://www.owockibot.xyz" target="_blank">owockibot.xyz</a> · bioregional coordination</div>
   <div class="controls">
     <button class="btn active" id="btnPlay">⏸ PAUSE</button>
     <button class="btn" id="btnReset">↺ RESET</button>
