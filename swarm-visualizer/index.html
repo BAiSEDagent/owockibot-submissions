@@ -52,39 +52,43 @@
 
   /* ── Mobile ────────────────────────────────────────────────────────────── */
   @media (max-width: 640px) {
-    body { overflow:hidden; }
+    /* Full scrollable page on mobile — no locked viewport */
+    body { overflow-y:auto; height:auto; min-height:100vh; }
 
     header { flex-direction:column; align-items:flex-start; gap:7px; padding:8px 12px; }
     .brand { font-size:11px; }
     .brand a { display:none; }
 
-    .controls { gap:6px; width:100%; }
-    .btn { padding:5px 10px; font-size:10px; flex-shrink:0; }
+    .controls { gap:6px; width:100%; flex-wrap:wrap; }
+    .btn { padding:5px 10px; font-size:10px; }
     label { font-size:9px; }
     input[type=range] { width:50px; }
-    /* Hide goal selector on mobile — defaults fine */
-    label:last-child { display:none; }
+    label:last-child { display:none; } /* hide goal selector */
 
     .stats-bar { gap:10px; padding:4px 12px; overflow-x:auto; flex-wrap:nowrap; }
     .stat .val { font-size:12px; }
     .stat .lbl { font-size:8px; }
 
-    /* Legend: horizontal strip along bottom-left instead of vertical sidebar */
+    /* Canvas: fixed height on mobile so it's always visible */
+    canvas { height:55vw; min-height:220px; max-height:320px; flex:none; }
+
+    /* Legend: in-flow horizontal strip below canvas */
     #legend {
-      top:auto; bottom:130px; left:0; right:0;
-      max-height:none; overflow-y:visible;
+      position:static;
       display:flex; flex-direction:row; flex-wrap:wrap;
-      gap:6px; padding:6px 10px;
-      border:none; border-top:1px solid rgba(245,197,24,.08);
-      background:rgba(3,3,3,.9);
+      gap:6px; padding:6px 10px; max-height:none;
+      border:none; border-top:1px solid #1a1a1a;
+      background:#050505;
     }
-    #legend > div:first-child { display:none; } /* hide AGENT ROLES header */
+    #legend > div:first-child { display:none; }
     .legend-item { margin-bottom:0; font-size:8px; }
 
-    /* Log: full-width strip at bottom */
+    /* Log: in-flow full-width below legend */
     #log {
-      width:100%; max-height:120px;
-      border-left:none; border-top:1px solid rgba(245,197,24,.12);
+      position:static;
+      width:100%; max-height:180px;
+      border-left:none; border-right:none;
+      border-top:1px solid rgba(245,197,24,.12);
     }
     .le { font-size:9px; }
   }
