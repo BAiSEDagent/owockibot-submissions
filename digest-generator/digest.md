@@ -1,5 +1,5 @@
 # 🌊 Owockibot Weekly Digest
-**Feb 22, 2026 – Mar 1, 2026**
+**Feb 23, 2026 – Mar 2, 2026**
 
 ---
 
@@ -79,4 +79,4 @@ _Twitter data unavailable. Set `TWITTER_BEARER_TOKEN` env var to enable._
 
 ---
 
-_Generated 2026-03-02T07:37:46.557Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_
+_Generated 2026-03-02T08:06:12.821Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_

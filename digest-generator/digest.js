@@ -253,7 +253,12 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
     <p style="font-size:13px;color:#f5c518;letter-spacing:.08em;border-bottom:1px solid #1f1f1f;padding-bottom:6px;margin:24px 0 12px;font-family:'Courier New',monospace">📋 OPEN BOUNTIES — CLAIM NOW</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${open.length
-        ? open.map(b => `<tr><td style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace"><a href="https://www.owockibot.xyz/bounty" style="color:#f5c518;text-decoration:none">${escHtml(b.title)}</a> <span style="background:#1a1f2e;color:#60a5fa;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace">${escHtml(fmtUSDC(b.reward_usdc))}</span></td></tr>`).join('')
+        ? open.map(b => `<tr><td style="padding:0;border-bottom:1px solid #1a1a1a">
+  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+    <td style="padding:6px 8px 6px 0;font-size:12px;font-family:'Courier New',monospace;width:100%"><a href="https://www.owockibot.xyz/bounty" style="color:#f5c518;text-decoration:none">${escHtml(b.title)}</a></td>
+    <td style="padding:6px 0;white-space:nowrap;vertical-align:top"><span style="background:#1a1f2e;color:#60a5fa;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;white-space:nowrap;display:inline-block">${escHtml(fmtUSDC(b.reward_usdc))}</span></td>
+  </tr></table>
+</td></tr>`).join('')
         : `<tr><td style="font-size:12px;color:#444;font-style:italic;padding:8px 0;font-family:'Courier New',monospace">No open bounties right now.</td></tr>`}
     </table>
 
