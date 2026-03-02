@@ -162,11 +162,19 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Owockibot Weekly Digest — ${weekRange()}</title>
+<style>
+@media (max-width:600px){
+  .stat-row td { display:block !important; width:100% !important; padding:0 0 10px 0 !important; }
+  .bounty-row { display:flex !important; justify-content:space-between !important; align-items:flex-start !important; gap:12px !important; }
+  .outer-wrap { padding:0 8px !important; }
+  .inner-pad { padding:16px !important; }
+}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:'Courier New',monospace;color:#e5e5e5">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a">
 <tr><td align="center" style="padding:32px 16px">
-<table width="620" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #222;border-radius:6px;overflow:hidden;max-width:620px;width:100%">
+<table class="outer-wrap" width="620" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #222;border-radius:6px;overflow:hidden;max-width:620px;width:100%">
 
   <!-- Header -->
   <tr><td style="background:#0a0a0a;border-bottom:2px solid #f5c518;padding:24px 28px">
@@ -175,9 +183,9 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
   </td></tr>
 
   <!-- Stats grid -->
-  <tr><td style="padding:24px 28px">
+  <tr><td class="inner-pad" style="padding:24px 28px">
     <table width="100%" cellpadding="0" cellspacing="0">
-      <tr>
+      <tr class="stat-row">
         <td width="33%" style="padding:0 6px 12px 0;text-align:center">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #1f1f1f;border-radius:4px">
             <tr><td style="padding:14px;text-align:center">
@@ -203,7 +211,7 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
           </table>
         </td>
       </tr>
-      <tr>
+      <tr class="stat-row">
         <td width="33%" style="padding:0 6px 0 0;text-align:center">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #1f1f1f;border-radius:4px">
             <tr><td style="padding:14px;text-align:center">
@@ -235,7 +243,7 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
     <p style="font-size:13px;color:#f5c518;letter-spacing:.08em;border-bottom:1px solid #1f1f1f;padding-bottom:6px;margin:24px 0 12px;font-family:'Courier New',monospace">✅ COMPLETED THIS WEEK</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${weekDone.length
-        ? weekDone.map(b => `<tr><td style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace">${b.title} <span style="background:#1a2e1a;color:#4ade80;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace">${fmtUSDC(b.reward_usdc)}</span></td></tr>`).join('')
+        ? weekDone.map(b => `<tr><td class="bounty-row" style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace;display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span>${b.title}</span> <span style="background:#1a2e1a;color:#4ade80;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;white-space:nowrap;flex-shrink:0">${fmtUSDC(b.reward_usdc)}</span></td></tr>`).join('')
         : `<tr><td style="font-size:12px;color:#444;font-style:italic;padding:8px 0;font-family:'Courier New',monospace">No completions this week.</td></tr>`}
     </table>
 
