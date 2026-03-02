@@ -9,7 +9,7 @@
 |--------|-----------|----------|
 | Bounties Completed | 11 | 39 |
 | USDC Paid Out | $275.00 USDC | $920.00 USDC |
-| New Builders | 5 | — |
+| New Builders | 6 | — |
 | Open Bounties | 2 | — |
 | Total Bounties | — | 82 |
 | Treasury (ETH) | No change | 0.0000 ETH |
@@ -71,6 +71,7 @@ _Twitter data unavailable. Set `TWITTER_BEARER_TOKEN` env var to enable._
 ## 🆕 New Builders
 
 - `0x95eb90afc145efb5e3f94ab9a282f3935cf0243b`
+- `0xC37604A1dD79Ed50A5c2943358db85CB743dd3e2`
 - `0x80370645C98f05Ad86BdF676FaE54afCDBF5BC10`
 - `0x7284e940dDF89dd45E3E6A6EF64d6614e90625a0`
 - `0x27fE6D57DF3eade7eB6Ca188A355Ed04BaB13E5D`
@@ -78,4 +79,4 @@ _Twitter data unavailable. Set `TWITTER_BEARER_TOKEN` env var to enable._
 
 ---
 
-_Generated 2026-03-02T07:28:46.284Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_
+_Generated 2026-03-02T07:37:46.557Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_

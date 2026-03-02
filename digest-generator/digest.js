@@ -27,6 +27,7 @@ function weekRange()  { return `${fmtDate(weekAgo())} – ${fmtDate(new Date())}
 function fmtUSDC(n)   { return `$${Number(n || 0).toFixed(2)} USDC`; }
 function fmtETH(n)    { return `${(Number(n || 0) / 1e18).toFixed(4)} ETH`; }
 function truncAddr(a) { return a ? `${a.slice(0, 10)}...` : '?'; }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function thisWeek(items, field = 'updated_at') {
   const cutoff = weekAgo().getTime();
@@ -80,10 +81,11 @@ async function generate() {
 
   const completed  = bounties.filter(b => b.status === 'completed');
   const weekDone   = thisWeek(completed, 'updated_at');
-  const weekClaim  = thisWeek(bounties.filter(b => b.status === 'claimed'), 'updated_at');
   const open       = bounties.filter(b => b.status === 'open');
   const weekUSDC   = weekDone.reduce((s, b) => s + (b.reward_usdc ?? 0), 0);
-  const newBuilders = new Set(weekClaim.map(b => b.claimer_address).filter(Boolean));
+  // New builders = unique claimers who completed OR claimed this week
+  const weekActive = thisWeek(bounties.filter(b => ['completed','claimed'].includes(b.status)), 'updated_at');
+  const newBuilders = new Set(weekActive.map(b => b.claimer_address).filter(Boolean));
 
   // ── Markdown ──────────────────────────────────────────────────────────────
 
@@ -155,7 +157,7 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
   // ── HTML Email (all inline CSS — email-client safe) ───────────────────────
 
   const tweetRows = tweets.length
-    ? tweets.map(t => `<tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace">${t.text.slice(0,140).replace(/</g,'&lt;')} <span style="color:#f5c518">❤️ ${t.public_metrics?.like_count ?? 0}</span></td></tr>`).join('')
+    ? tweets.map(t => `<tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace">${escHtml(t.text.slice(0,140))} <span style="color:#f5c518">❤️ ${Number(t.public_metrics?.like_count ?? 0)}</span></td></tr>`).join('')
     : `<tr><td style="padding:8px 0;font-size:12px;color:#444;font-family:'Courier New',monospace;font-style:italic">Twitter data unavailable. Set TWITTER_BEARER_TOKEN to enable.</td></tr>`;
 
   const html = `<!DOCTYPE html>
@@ -243,7 +245,7 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
     <p style="font-size:13px;color:#f5c518;letter-spacing:.08em;border-bottom:1px solid #1f1f1f;padding-bottom:6px;margin:24px 0 12px;font-family:'Courier New',monospace">✅ COMPLETED THIS WEEK</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${weekDone.length
-        ? weekDone.map(b => `<tr><td class="bounty-row" style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace;display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span>${b.title}</span> <span style="background:#1a2e1a;color:#4ade80;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;white-space:nowrap;flex-shrink:0">${fmtUSDC(b.reward_usdc)}</span></td></tr>`).join('')
+        ? weekDone.map(b => `<tr><td class="bounty-row" style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace;display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span>${escHtml(b.title)}</span> <span style="background:#1a2e1a;color:#4ade80;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;white-space:nowrap;flex-shrink:0">${escHtml(fmtUSDC(b.reward_usdc))}</span></td></tr>`).join('')
         : `<tr><td style="font-size:12px;color:#444;font-style:italic;padding:8px 0;font-family:'Courier New',monospace">No completions this week.</td></tr>`}
     </table>
 
@@ -251,7 +253,7 @@ _Generated ${new Date().toISOString()} · [owockibot.xyz](https://www.owockibot.
     <p style="font-size:13px;color:#f5c518;letter-spacing:.08em;border-bottom:1px solid #1f1f1f;padding-bottom:6px;margin:24px 0 12px;font-family:'Courier New',monospace">📋 OPEN BOUNTIES — CLAIM NOW</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${open.length
-        ? open.map(b => `<tr><td style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace"><a href="https://www.owockibot.xyz/bounty" style="color:#f5c518;text-decoration:none">${b.title}</a> <span style="background:#1a1f2e;color:#60a5fa;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace">${fmtUSDC(b.reward_usdc)}</span></td></tr>`).join('')
+        ? open.map(b => `<tr><td style="padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:12px;color:#ccc;font-family:'Courier New',monospace"><a href="https://www.owockibot.xyz/bounty" style="color:#f5c518;text-decoration:none">${escHtml(b.title)}</a> <span style="background:#1a1f2e;color:#60a5fa;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace">${escHtml(fmtUSDC(b.reward_usdc))}</span></td></tr>`).join('')
         : `<tr><td style="font-size:12px;color:#444;font-style:italic;padding:8px 0;font-family:'Courier New',monospace">No open bounties right now.</td></tr>`}
     </table>
 
