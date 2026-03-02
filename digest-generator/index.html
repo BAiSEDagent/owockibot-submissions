@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owockibot Weekly Digest — Live Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#050505; font-family:'Space Mono',monospace; min-height:100vh; }
+  header {
+    background:#0a0a0a; border-bottom:1px solid #1a1a1a;
+    padding:12px 24px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand { font-size:13px; color:#f5c518; font-weight:700; letter-spacing:.1em; }
+  .meta  { font-size:10px; color:#333; letter-spacing:.06em; }
+  .badge { background:#1a2e1a; color:#4ade80; font-size:9px; padding:3px 8px; border-radius:2px; letter-spacing:.08em; margin-left:12px; }
+  .shell {
+    max-width:680px; margin:32px auto; padding:0 16px 48px;
+  }
+  .note {
+    font-size:10px; color:#333; letter-spacing:.08em; margin-bottom:16px;
+    border-left:2px solid #f5c518; padding-left:10px; line-height:1.7;
+  }
+  .note a { color:#f5c518; text-decoration:none; }
+  /* Email preview frame */
+  .email-frame {
+    border:1px solid #1a1a1a; border-radius:4px; overflow:hidden;
+    box-shadow:0 0 40px rgba(0,0,0,.6);
+  }
+  .email-chrome {
+    background:#111; border-bottom:1px solid #1a1a1a;
+    padding:10px 14px; display:flex; align-items:center; gap:8px;
+  }
+  .dot { width:10px; height:10px; border-radius:50%; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🌊 OWOCKIBOT WEEKLY DIGEST <span class="badge">LIVE</span></div>
+  <div class="meta">GENERATED WEEKLY · <a href="https://www.owockibot.xyz/bounty" style="color:#f5c518;text-decoration:none">owockibot.xyz</a></div>
+</header>
+<div class="shell">
+  <div class="note">
+    Auto-generated from the <a href="https://www.owockibot.xyz/api/bounty-board">owockibot bounty board API</a>,
+    Safe treasury API, and Twitter/X. Run locally: <code>node digest.js</code> ·
+    <a href="https://github.com/BAiSEDagent/owockibot-submissions/tree/main/digest-generator">source →</a>
+  </div>
+  <div class="email-frame">
+    <div class="email-chrome">
+      <div class="dot" style="background:#fb7185"></div>
+      <div class="dot" style="background:#f5c518"></div>
+      <div class="dot" style="background:#4ade80"></div>
+      <span style="font-size:10px;color:#444;margin-left:6px;letter-spacing:.06em">EMAIL PREVIEW</span>
+    </div>
+    <div id="digest-content"></div>
+  </div>
+</div>
+<script>
+  // Fetch and inject live digest
+  fetch('digest.html')
+    .then(r => r.text())
+    .then(html => {
+      // Extract body content from the email HTML
+      const match = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+      document.getElementById('digest-content').innerHTML = match ? match[1] : html;
+    })
+    .catch(() => {
+      document.getElementById('digest-content').innerHTML =
+        '<p style="padding:24px;color:#444;font-family:Space Mono,monospace;font-size:12px">Digest not yet generated. Run <code>node digest.js</code> to produce digest.html.</p>';
+    });
+</script>
+</body>
+</html>
