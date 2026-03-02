@@ -66,7 +66,7 @@ let logs=[];
 
 // Build legend
 const lg=document.getElementById('legend');
-ROLES.forEach(r=>{ const d=document.createElement('div'); d.className='legend-item'; d.innerHTML=`<div class="legend-dot" style="background:${COLORS[r]}"></div><span style="color:#666">${r}</span>`; lg.appendChild(d); });
+ROLES.forEach(r=>{ const d=document.createElement('div'); d.className='legend-item'; const dot=document.createElement('div');dot.className='legend-dot';dot.style.background=COLORS[r];const txt=document.createElement('span');txt.style.color='#666';txt.textContent=r;d.appendChild(dot);d.appendChild(txt); lg.appendChild(d); });
 
 function resize(){ W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
 

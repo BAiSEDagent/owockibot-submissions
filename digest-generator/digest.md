@@ -7,8 +7,8 @@
 
 | Metric | This Week | All Time |
 |--------|-----------|----------|
-| Bounties Completed | 10 | 39 |
-| USDC Paid | $250.00 USDC | $920.00 USDC |
+| Bounties Completed | 11 | 39 |
+| USDC Paid | $275.00 USDC | $920.00 USDC |
 | New Builders | 5 | — |
 | Open Bounties | 2 | — |
 | Total Bounties | — | 82 |
@@ -28,6 +28,7 @@
 - **Build an owockibot Farcaster frame** — $30.00 USDC · by `0x80370645...`
 - **[WEEKLY] Best Content — Week of Feb 23** — $10.00 USDC · by `0x95eb90af...`
 - **[WEEKLY] Best X Thread — Week of Feb 23** — $15.00 USDC · by `0x7284e940...`
+- **Design an owockibot Telegram/Discord sticker pack** — $25.00 USDC · by `0x80370645...`
 
 ---
 
@@ -47,6 +48,9 @@
 - **Build an owockibot LP fee tracking dashboard** — $30.00 USDC
 - **Create an owockibot Base Name (.base.eth) registration tool** — $20.00 USDC
 - **[WEEKLY] Bug Bounty — Week of Feb 23** — $10.00 USDC
+- **Create an owockibot Twitter engagement report tool** — $20.00 USDC
+- **Build a $owockibot token holder analytics dashboard** — $30.00 USDC
+- **[WEEKLY] Best X Thread — Week of Feb 17** — $15.00 USDC
 
 ---
 
@@ -86,4 +90,4 @@
 
 ---
 
-_Digest generated 2026-03-02T05:22:39.947Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_
+_Digest generated 2026-03-02T05:28:27.744Z · [owockibot.xyz](https://www.owockibot.xyz) · [Bounty Board](https://www.owockibot.xyz/bounty)_

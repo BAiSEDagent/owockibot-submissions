@@ -8,7 +8,7 @@
 const BOUNTY_API  = 'https://www.owockibot.xyz/api/bounty-board';
 const STATS_API   = 'https://www.owockibot.xyz/api/bounty-board/stats';
 const SAFE_ADDR   = '0x26B7805Dd8aEc26DA55fc8e0c659cf6822b740Be';
-const SAFE_API    = `https://safe-transaction-base.safe.global/api/v1/safes/${SAFE_ADDR}`;
+const SAFE_API    = `https://safe-transaction-base.safe.global/api/v1/safes/${SAFE_ADDR}/`;
 const SAFE_TXS    = `https://safe-transaction-base.safe.global/api/v1/safes/${SAFE_ADDR}/multisig-transactions/?limit=10`;
 
 async function fetchJSON(url) {
@@ -62,8 +62,8 @@ async function generate() {
     fetchSafe(),
   ]);
 
-  const weekCompleted = filterThisWeek(bounties.filter(b => b.status === 'completed'), 'completed_at');
-  const weekClaimed   = filterThisWeek(bounties.filter(b => b.status === 'claimed'),   'claimed_at');
+  const weekCompleted = filterThisWeek(bounties.filter(b => b.status === 'completed'), 'updated_at');
+  const weekClaimed   = filterThisWeek(bounties.filter(b => b.status === 'claimed'),   'updated_at');
   const weekPosted    = filterThisWeek(bounties,                                        'created_at');
   const openBounties  = bounties.filter(b => b.status === 'open');
 
